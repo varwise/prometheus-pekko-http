@@ -6,14 +6,18 @@ trait EventObserver {
   def observe(eventName: String, eventDetails: String): Unit
 }
 
-/**
-  * Records observed events in a prometheus counter
+/** Records observed events in a prometheus counter
   *
-  * @param metricName the metric name
-  * @param metricHelp the metric help message
-  * @param eventLabelName the event label name that will be applied to the counter when recording events
-  * @param eventDetailsLabelName the event details label name that will be applied to the counter when recording events
-  * @param registry a prometheus registry to which the counter will be registered
+  * @param metricName
+  *   the metric name
+  * @param metricHelp
+  *   the metric help message
+  * @param eventLabelName
+  *   the event label name that will be applied to the counter when recording events
+  * @param eventDetailsLabelName
+  *   the event details label name that will be applied to the counter when recording events
+  * @param registry
+  *   a prometheus registry to which the counter will be registered
   */
 class PrometheusEventObserver(
     metricName: String,

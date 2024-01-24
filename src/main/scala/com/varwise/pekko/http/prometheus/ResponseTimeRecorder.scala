@@ -9,16 +9,21 @@ trait ResponseTimeRecorder {
   def recordResponseTime(endpoint: String, responseTime: FiniteDuration): Unit
 }
 
-/**
-  * Records response times in Prometheus histogram.
-  * Reported values will be automatically converted to the time unit set as constructor argument.
+/** Records response times in Prometheus histogram. Reported values will be automatically converted to the time unit set
+  * as constructor argument.
   *
-  * @param metricName the metric name
-  * @param metricHelp the metric help message
-  * @param buckets the buckets that will be used in the histogram
-  * @param endpointLabelName the endpoint label name that will be applied to the histogram when recording response times
-  * @param registry a prometheus registry to which the histogram will be registered
-  * @param timeUnit the time unit in which observed values will be recorded.
+  * @param metricName
+  *   the metric name
+  * @param metricHelp
+  *   the metric help message
+  * @param buckets
+  *   the buckets that will be used in the histogram
+  * @param endpointLabelName
+  *   the endpoint label name that will be applied to the histogram when recording response times
+  * @param registry
+  *   a prometheus registry to which the histogram will be registered
+  * @param timeUnit
+  *   the time unit in which observed values will be recorded.
   */
 class PrometheusResponseTimeRecorder(
     metricName: String,
@@ -55,7 +60,7 @@ object PrometheusResponseTimeRecorder {
 
   lazy val DefaultRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
 
-  lazy val Default: PrometheusResponseTimeRecorder = {
+  lazy val Default: PrometheusResponseTimeRecorder =
     new PrometheusResponseTimeRecorder(
       DefaultMetricName,
       DefaultMetricHelp,
@@ -64,7 +69,6 @@ object PrometheusResponseTimeRecorder {
       DefaultRegistry,
       DefaultTimeUnit
     )
-  }
 }
 
 class NoOpResponseTimeRecorder extends ResponseTimeRecorder {

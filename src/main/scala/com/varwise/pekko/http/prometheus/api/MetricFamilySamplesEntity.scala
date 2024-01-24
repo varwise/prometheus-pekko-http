@@ -27,8 +27,7 @@ object MetricFamilySamplesEntity {
     writer.toString
   }
 
-  implicit val metricsFamilySamplesMarshaller: ToEntityMarshaller[MetricFamilySamplesEntity] = {
+  implicit val metricsFamilySamplesMarshaller: ToEntityMarshaller[MetricFamilySamplesEntity] =
     Marshaller.withFixedContentType(mediaType)(s => HttpEntity(mediaType, toPrometheusTextFormat(s)))
-  }
 
 }

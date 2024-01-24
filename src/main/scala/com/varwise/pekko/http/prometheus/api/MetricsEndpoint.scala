@@ -6,7 +6,7 @@ import io.prometheus.client.CollectorRegistry
 
 class MetricsEndpoint(registry: CollectorRegistry) {
 
-  val routes: Route = {
+  val routes: Route =
     get {
       path("metrics") {
         complete {
@@ -14,6 +14,5 @@ class MetricsEndpoint(registry: CollectorRegistry) {
         }
       }
     }
-  }
 
 }

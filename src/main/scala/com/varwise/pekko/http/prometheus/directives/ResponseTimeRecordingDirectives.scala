@@ -11,11 +11,12 @@ import scala.util.control.NonFatal
 trait ResponseTimeRecordingDirectives {
   this: ResponseTimeRecorderProvider =>
 
-  /**
-    * Directive that will record response time in a prometheus histogram
+  /** Directive that will record response time in a prometheus histogram
     *
-    * @param endpoint the endpoint label value in the histogram
-    * @return a new directive that records request latencies in a prometheus histogram
+    * @param endpoint
+    *   the endpoint label value in the histogram
+    * @return
+    *   a new directive that records request latencies in a prometheus histogram
     */
   def recordResponseTime(endpoint: String): Directive[Unit] = BasicDirectives.extractRequestContext.flatMap { _ =>
     val requestStartTime = System.nanoTime()
