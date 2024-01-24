@@ -12,6 +12,8 @@ val scala3Version = "3.3.1"
 scalaVersion := scala3Version
 crossScalaVersions := Seq(scala3Version, scala2Version)
 
+credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
+
 libraryDependencies ++= {
   val simpleclientVersion = "0.16.0"
   val pekkoVersion = "1.0.2"
