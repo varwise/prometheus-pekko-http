@@ -4,19 +4,19 @@ organization := "com.varwise"
 
 publishTo := sonatypePublishToBundle.value
 
-version := "0.6.1-SNAPSHOT"
+version := "1.0.0"
 
-val scala2Version = "2.13.6"
-val scala3Version = "3.0.2"
+val scala2Version = "2.13.12"
+val scala3Version = "3.3.1"
 
 scalaVersion := scala3Version
 crossScalaVersions := Seq(scala3Version, scala2Version)
 
 libraryDependencies ++= {
-  val simpleclientVersion = "0.12.0"
-  val pekkoVersion = "1.0.0"
+  val simpleclientVersion = "0.16.0"
+  val pekkoVersion = "1.0.2"
   val pekkoHttpVersion = "1.0.0"
-  val scalaTestVersion = "3.2.10"
+  val scalaTestVersion = "3.2.17"
 
   Seq(
     ("org.apache.pekko" %% "pekko-actor"           % pekkoVersion     % Provided).cross(CrossVersion.for3Use2_13),
