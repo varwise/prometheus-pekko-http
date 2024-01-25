@@ -17,7 +17,7 @@ class PrometheusResponseTimeRecorderSpec extends AnyFlatSpec with Matchers {
       labelNames: List[String],
       labelValues: List[String],
       bucket: Double
-    ): Int = {
+  ): Int = {
     val name = metricName + "_bucket"
 
     // 'le' should be the first label in the list
