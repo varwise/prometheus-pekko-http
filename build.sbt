@@ -25,11 +25,11 @@ libraryDependencies ++= {
     ("org.apache.pekko" %% "pekko-stream"          % pekkoVersion     % Provided).cross(CrossVersion.for3Use2_13),
     ("org.apache.pekko" %% "pekko-http"            % pekkoHttpVersion % Provided).cross(CrossVersion.for3Use2_13),
     ("org.apache.pekko" %% "pekko-http-spray-json" % pekkoHttpVersion % Provided).cross(CrossVersion.for3Use2_13),
-    "io.prometheus" % "simpleclient"        % simpleclientVersion,
-    "io.prometheus" % "simpleclient_common" % simpleclientVersion,
-    ("org.apache.pekko" %% "pekko-testkit"      % pekkoVersion     % Test).cross(CrossVersion.for3Use2_13),
-    ("org.apache.pekko" %% "pekko-http-testkit" % pekkoHttpVersion % Test).cross(CrossVersion.for3Use2_13),
-    "org.scalatest" %% "scalatest" % scalaTestVersion % Test
+    "io.prometheus"      % "simpleclient"          % simpleclientVersion,
+    "io.prometheus"      % "simpleclient_common"   % simpleclientVersion,
+    ("org.apache.pekko" %% "pekko-testkit"         % pekkoVersion     % Test).cross(CrossVersion.for3Use2_13),
+    ("org.apache.pekko" %% "pekko-http-testkit"    % pekkoHttpVersion % Test).cross(CrossVersion.for3Use2_13),
+    "org.scalatest"     %% "scalatest"             % scalaTestVersion % Test
   )
 }
 
