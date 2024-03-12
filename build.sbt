@@ -17,19 +17,19 @@ credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 libraryDependencies ++= {
   val simpleclientVersion = "0.16.0"
   val pekkoVersion = "1.0.2"
-  val pekkoHttpVersion = "1.0.0"
+  val pekkoHttpVersion = "1.0.1"
   val scalaTestVersion = "3.2.17"
 
   Seq(
-    ("org.apache.pekko" %% "pekko-actor"           % pekkoVersion     % Provided).cross(CrossVersion.for3Use2_13),
-    ("org.apache.pekko" %% "pekko-stream"          % pekkoVersion     % Provided).cross(CrossVersion.for3Use2_13),
-    ("org.apache.pekko" %% "pekko-http"            % pekkoHttpVersion % Provided).cross(CrossVersion.for3Use2_13),
-    ("org.apache.pekko" %% "pekko-http-spray-json" % pekkoHttpVersion % Provided).cross(CrossVersion.for3Use2_13),
-    "io.prometheus"      % "simpleclient"          % simpleclientVersion,
-    "io.prometheus"      % "simpleclient_common"   % simpleclientVersion,
-    ("org.apache.pekko" %% "pekko-testkit"         % pekkoVersion     % Test).cross(CrossVersion.for3Use2_13),
-    ("org.apache.pekko" %% "pekko-http-testkit"    % pekkoHttpVersion % Test).cross(CrossVersion.for3Use2_13),
-    "org.scalatest"     %% "scalatest"             % scalaTestVersion % Test
+    "org.apache.pekko" %% "pekko-actor"           % pekkoVersion     % Provided,
+    "org.apache.pekko" %% "pekko-stream"          % pekkoVersion     % Provided,
+    "org.apache.pekko" %% "pekko-http"            % pekkoHttpVersion % Provided,
+    "org.apache.pekko" %% "pekko-http-spray-json" % pekkoHttpVersion % Provided,
+    "io.prometheus"      % "simpleclient"         % simpleclientVersion,
+    "io.prometheus"      % "simpleclient_common"  % simpleclientVersion,
+    "org.apache.pekko" %% "pekko-testkit"         % pekkoVersion     % Test,
+    "org.apache.pekko" %% "pekko-http-testkit"    % pekkoHttpVersion % Test,
+    "org.scalatest"     %% "scalatest"            % scalaTestVersion % Test
   )
 }
 
