@@ -2,7 +2,7 @@
 
 Collection of utilities to allow exposing prometheus metrics from pekko-http endpoint using the prometheus java client
 
-    "com.varwise" %% "prometheus-pekko-http" % "1.0.0"
+    "com.varwise" %% "prometheus-pekko-http" % "1.0.1"
 
 ### Related projects
 
