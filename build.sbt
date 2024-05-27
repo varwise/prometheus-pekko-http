@@ -6,7 +6,7 @@ publishTo := sonatypePublishToBundle.value
 
 version := "2.0.0"
 
-val scala2Version = "2.13.13"
+val scala2Version = "2.13.14"
 val scala3Version = "3.3.3"
 
 scalaVersion := scala3Version
