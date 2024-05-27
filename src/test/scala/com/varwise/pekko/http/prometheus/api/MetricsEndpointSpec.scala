@@ -1,23 +1,25 @@
 package com.varwise.pekko.http.prometheus.api
 
+import com.varwise.pekko.http.prometheus.Utils._
+import io.prometheus.metrics.core.metrics.Histogram
+import io.prometheus.metrics.expositionformats.ExpositionFormats
+import io.prometheus.metrics.model.registry.PrometheusRegistry
 import org.apache.pekko.http.scaladsl.model.HttpCharsets
 import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
-import com.varwise.pekko.http.prometheus.Utils._
-import io.prometheus.client.exporter.common.TextFormat
-import io.prometheus.client.{CollectorRegistry, Histogram}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-import java.io.StringWriter
+import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
 import scala.util.Random
 
 class MetricsEndpointSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest {
 
-  private def createEndpoint(collectorRegistry: CollectorRegistry) =
+  private def createEndpoint(collectorRegistry: PrometheusRegistry) =
     new MetricsEndpoint(collectorRegistry)
 
   "Metrics endpoint" should "return the correct media type and charset" in {
-    val api = createEndpoint(CollectorRegistry.defaultRegistry)
+    val api = createEndpoint(PrometheusRegistry.defaultRegistry)
     Get("/metrics") ~> api.routes ~> check {
       mediaType.subType shouldBe "plain"
       mediaType.isText shouldBe true
@@ -27,20 +29,21 @@ class MetricsEndpointSpec extends AnyFlatSpec with Matchers with ScalatestRouteT
   }
 
   it should "return serialized metrics in the prometheus text format" in {
-    val registry = new CollectorRegistry()
+    val registry = new PrometheusRegistry()
     val api = createEndpoint(registry)
     val RandomTestName = generateRandomStringOfLength(16)
     val RandomTestHelp = generateRandomStringOfLength(16)
-    val hist = Histogram.build().name(RandomTestName).help(RandomTestHelp).linearBuckets(0, 1, 10).register(registry)
+    val hist = Histogram.builder().name(RandomTestName).help(RandomTestHelp).register(registry)
 
     hist.observe(Math.abs(Random.nextDouble()))
 
     Get("/metrics") ~> api.routes ~> check {
       val resp = responseAs[String]
-      val writer = new StringWriter()
-      TextFormat.write004(writer, registry.metricFamilySamples())
-
-      resp shouldBe writer.toString
+      val baos = new ByteArrayOutputStream()
+      ExpositionFormats.init().getPrometheusTextFormatWriter().write(baos, registry.scrape())
+      val expected = new String(baos.toByteArray, StandardCharsets.UTF_8)
+      baos.close()
+      resp shouldBe expected
     }
   }
 }

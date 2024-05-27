@@ -1,6 +1,7 @@
 package com.varwise.pekko.http.prometheus
 
-import io.prometheus.client.{CollectorRegistry, Histogram}
+import io.prometheus.metrics.core.metrics.Histogram
+import io.prometheus.metrics.model.registry.PrometheusRegistry
 
 import scala.concurrent.duration
 import scala.concurrent.duration.{FiniteDuration, TimeUnit}
@@ -30,23 +31,21 @@ class PrometheusResponseTimeRecorder(
     metricHelp: String,
     buckets: List[Double],
     endpointLabelName: String,
-    registry: CollectorRegistry,
+    registry: PrometheusRegistry,
     timeUnit: TimeUnit)
     extends ResponseTimeRecorder {
 
-  private val responseTimes = buildHistogram.register(registry)
-
-  override def recordResponseTime(endpoint: String, responseTime: FiniteDuration): Unit =
-    responseTimes.labels(endpoint).observe(responseTime.toUnit(timeUnit))
-
-  private def buildHistogram: Histogram.Builder =
+  private val responseTimes: Histogram =
     Histogram
-      .build()
+      .builder()
       .name(metricName)
       .help(metricHelp)
       .labelNames(endpointLabelName)
-      .buckets(buckets: _*)
+      .classicUpperBounds(buckets: _*)
+      .register(registry)
 
+  override def recordResponseTime(endpoint: String, responseTime: FiniteDuration): Unit =
+    responseTimes.labelValues(endpoint).observe(responseTime.toUnit(timeUnit))
 }
 
 object PrometheusResponseTimeRecorder {
@@ -58,7 +57,7 @@ object PrometheusResponseTimeRecorder {
   val DefaultEndpointLabel = "endpoint"
   val DefaultTimeUnit: TimeUnit = duration.SECONDS
 
-  lazy val DefaultRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
+  lazy val DefaultRegistry: PrometheusRegistry = PrometheusRegistry.defaultRegistry
 
   lazy val Default: PrometheusResponseTimeRecorder =
     new PrometheusResponseTimeRecorder(
