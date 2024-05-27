@@ -2,7 +2,7 @@
 
 Collection of utilities to allow exposing prometheus metrics from pekko-http endpoint using the prometheus java client
 
-    "com.varwise" %% "prometheus-pekko-http" % "1.0.1"
+    "com.varwise" %% "prometheus-pekko-http" % "2.0.0"
 
 ### Related projects
 
@@ -17,6 +17,7 @@ Here's the quick migration guide:
 2. Supply `ExecutionContext` instance to `MetricsEndpoint`.
 
 For more information about Prometheus Java client library please refer to https://prometheus.github.io/client_java/.
+
 ### Publishing
 
 Artifacts are published to Maven central using the [sbt-sonatype](https://github.com/xerial/sbt-sonatype) plugin
