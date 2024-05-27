@@ -4,7 +4,7 @@ organization := "com.varwise"
 
 publishTo := sonatypePublishToBundle.value
 
-version := "1.0.1"
+version := "2.0.0"
 
 val scala2Version = "2.13.13"
 val scala3Version = "3.3.3"
@@ -15,21 +15,23 @@ crossScalaVersions := Seq(scala3Version, scala2Version)
 credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 
 libraryDependencies ++= {
-  val simpleclientVersion = "0.16.0"
+  val prometheusJavaClientVersion = "1.3.1"
   val pekkoVersion = "1.0.2"
   val pekkoHttpVersion = "1.0.1"
   val scalaTestVersion = "3.2.18"
+  val slf4jVersion = "2.0.13"
 
   Seq(
-    "org.apache.pekko" %% "pekko-actor"           % pekkoVersion     % Provided,
-    "org.apache.pekko" %% "pekko-stream"          % pekkoVersion     % Provided,
-    "org.apache.pekko" %% "pekko-http"            % pekkoHttpVersion % Provided,
-    "org.apache.pekko" %% "pekko-http-spray-json" % pekkoHttpVersion % Provided,
-    "io.prometheus"      % "simpleclient"         % simpleclientVersion,
-    "io.prometheus"      % "simpleclient_common"  % simpleclientVersion,
-    "org.apache.pekko" %% "pekko-testkit"         % pekkoVersion     % Test,
-    "org.apache.pekko" %% "pekko-http-testkit"    % pekkoHttpVersion % Test,
-    "org.scalatest"     %% "scalatest"            % scalaTestVersion % Test
+    "org.apache.pekko" %% "pekko-actor"                           % pekkoVersion     % Provided,
+    "org.apache.pekko" %% "pekko-stream"                          % pekkoVersion     % Provided,
+    "org.apache.pekko" %% "pekko-http"                            % pekkoHttpVersion % Provided,
+    "org.apache.pekko" %% "pekko-http-spray-json"                 % pekkoHttpVersion % Provided,
+    "io.prometheus"     % "prometheus-metrics-core"               % prometheusJavaClientVersion,
+    "io.prometheus"     % "prometheus-metrics-exposition-formats" % prometheusJavaClientVersion,
+    "org.slf4j"         % "slf4j-api"                             % slf4jVersion,
+    "org.apache.pekko" %% "pekko-testkit"                         % pekkoVersion     % Test,
+    "org.apache.pekko" %% "pekko-http-testkit"                    % pekkoHttpVersion % Test,
+    "org.scalatest"    %% "scalatest"                             % scalaTestVersion % Test
   )
 }
 

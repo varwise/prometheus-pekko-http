@@ -1,6 +1,7 @@
 package com.varwise.pekko.http.prometheus
 
-import io.prometheus.client.{CollectorRegistry, Counter}
+import io.prometheus.metrics.core.metrics.Counter
+import io.prometheus.metrics.model.registry.PrometheusRegistry
 
 trait EventObserver {
   def observe(eventName: String, eventDetails: String): Unit
@@ -24,20 +25,19 @@ class PrometheusEventObserver(
     metricHelp: String,
     eventLabelName: String,
     eventDetailsLabelName: String,
-    registry: CollectorRegistry)
+    registry: PrometheusRegistry)
     extends EventObserver {
 
-  val counter: Counter = buildCounter.register(registry)
-
-  private def buildCounter: Counter.Builder =
+  private val counter: Counter =
     Counter
-      .build()
+      .builder()
       .name(metricName)
       .help(metricHelp)
       .labelNames(eventLabelName, eventDetailsLabelName)
+      .register(registry)
 
   override def observe(eventName: String, eventDetails: String): Unit =
-    counter.labels(eventName, eventDetails).inc()
+    counter.labelValues(eventName, eventDetails).inc()
 }
 
 object PrometheusEventObserver {
@@ -47,7 +47,7 @@ object PrometheusEventObserver {
   private val FailedOperationMetricHelp = "The number of observed failed operations"
   private val DefaultEventLabelName = "event"
   private val DefaultEventDetailsLabelName = "details"
-  private val DefaultRegistry = CollectorRegistry.defaultRegistry
+  private val DefaultRegistry = PrometheusRegistry.defaultRegistry
 
   // Common event observers used in scala projects in Open Planet micro-services
   lazy val SuccessfulOperations: PrometheusEventObserver =

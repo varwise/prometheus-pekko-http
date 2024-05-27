@@ -1,33 +1,38 @@
 package com.varwise.pekko.http.prometheus
 
 import com.varwise.pekko.http.prometheus.Utils._
-import io.prometheus.client.{Collector, CollectorRegistry}
+import io.prometheus.metrics.model.registry.PrometheusRegistry
+import io.prometheus.metrics.model.snapshots.{HistogramSnapshot, Labels}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.duration
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters.IterableHasAsScala
 import scala.util.Random
 
 class PrometheusResponseTimeRecorderSpec extends AnyFlatSpec with Matchers {
 
   private def getBucketValue(
-      registry: CollectorRegistry,
+      registry: PrometheusRegistry,
       metricName: String,
-      labelNames: List[String],
-      labelValues: List[String],
+      labels: Labels,
       bucket: Double
-  ): Int = {
-    val name = metricName + "_bucket"
+  ): Long =
+    registry
+      .scrape()
+      .asScala
+      .collect { case metric: HistogramSnapshot => metric }
+      .filter(_.getMetadata.getName == metricName)
+      .flatMap(_.getDataPoints.asScala)
+      .filter(_.getLabels.equals(labels))
+      .flatMap(_.getClassicBuckets.asScala)
+      .find(_.getUpperBound == bucket)
+      .get
+      .getCount
 
-    // 'le' should be the first label in the list
-    val allLabelNames = (Array("le") ++ labelNames).reverse
-    val allLabelValues = (Array(Collector.doubleToGoString(bucket)) ++ labelValues).reverse
-    registry.getSampleValue(name, allLabelNames, allLabelValues).intValue()
-  }
-
-  "PrometheusLatencyRecorder" should "register a histogram and record request latencies" in {
-    val registry = new CollectorRegistry()
+  "PrometheusResponseTimeRecorder" should "register a histogram and record request latencies" in {
+    val registry = new PrometheusRegistry()
     val randomMetricName = generateRandomString
     val randomMetricHelp = generateRandomString
     val randomLabelName = generateRandomString
@@ -48,20 +53,14 @@ class PrometheusResponseTimeRecorderSpec extends AnyFlatSpec with Matchers {
 
     recorder.recordResponseTime(randomEndpointName, FiniteDuration(randomLatency, duration.MILLISECONDS))
 
-    val first =
-      getBucketValue(registry, randomMetricName, List(randomLabelName), List(randomEndpointName), buckets.head)
-    val second =
-      getBucketValue(registry, randomMetricName, List(randomLabelName), List(randomEndpointName), buckets.last)
-    val positiveInf = getBucketValue(
-      registry,
-      randomMetricName,
-      List(randomLabelName),
-      List(randomEndpointName),
-      Double.PositiveInfinity
-    )
+    val labels = Labels.of(randomLabelName, randomEndpointName)
+
+    val first = getBucketValue(registry, randomMetricName, labels, buckets.head)
+    val second = getBucketValue(registry, randomMetricName, labels, buckets.last)
+    val positiveInf = getBucketValue(registry, randomMetricName, labels, Double.PositiveInfinity)
 
     first shouldBe 0
     second shouldBe 1
-    positiveInf shouldBe 1
+    positiveInf shouldBe 0
   }
 }
